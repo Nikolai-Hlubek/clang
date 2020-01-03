@@ -4508,6 +4508,31 @@ TEST_F(FormatTest, AllowAllConstructorInitializersOnNextLine) {
                Style);
 }
 
+TEST_F(FormatTest, ConstructorInitializerAllOnOneLineOrOnePerLine_AlwaysBreak) {
+  FormatStyle Style = getLLVMStyle();
+  Style.ColumnLimit = 160;
+  Style.BinPackParameters = false;
+  Style.BreakConstructorInitializers = FormatStyle::BCIS_AfterColon;
+  Style.AllowAllConstructorInitializersOnNextLine = false;
+  Style.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+  verifyFormat("Constructor() :\n"
+               "    aaaaaaaaaaaaaaaaaa(a),\n"
+               "    bbbbbbbbbbbbbbbbbbbbb(b) {}",
+               Style);
+
+  Style.AllowAllConstructorInitializersOnNextLine = true;
+  verifyFormat("Constructor() :\n"
+               "    aaaaaaaaaaaaaaaaaa(a), bbbbbbbbbbbbbbbbbbbbb(b) {}",
+               Style);
+
+
+  Style.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+  verifyFormat("Constructor() : a(a), b(b) {}",
+               Style);
+
+}
+
+
 TEST_F(FormatTest, AllowAllArgumentsOnNextLine) {
   FormatStyle Style = getLLVMStyle();
   Style.ColumnLimit = 60;
